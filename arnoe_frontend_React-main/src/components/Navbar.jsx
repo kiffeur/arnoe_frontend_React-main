@@ -3,13 +3,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCar, FaHotel, FaPlane } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
   const location = useLocation();
+  const [showModal, setShowModal] = useState(false);
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,27 +32,24 @@ const Navbar = () => {
 
   const navLinks = [
     { 
-      name: 'Location de Voitures', 
+      name: t('location'), 
       to: '/',
       icon: FaCar
     },
     { 
-      name: 'Logement', 
+      name: t('accommodation'), 
       to: '/accommodation',
       icon: FaHotel
     },
     { 
-      name: "Achat de Billet d'Avion", 
+      name: t('flightTickets'), 
       to: '#',
       icon: FaPlane
     }
   ];
 
-  const isActive = (path) => {
-    if (path === '/') {
-      return location.pathname === path;
-    }
-    return location.pathname.startsWith(path);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
   };
 
   return (
@@ -74,14 +73,21 @@ const Navbar = () => {
                   key={link.name}
                   onClick={() => handleNavClick(link.to)}
                   className={`flex items-center space-x-2 font-medium transition-all duration-300 px-4 py-2 rounded-lg
-                    ${isActive(link.to)
+                    ${location.pathname === link.to
                       ? 'text-[#283285] font-bold bg-blue-50' 
                       : 'text-[#596198] hover:text-[#232b6c] hover:bg-gray-50'}`}
                 >
-                  <link.icon className={`text-xl ${isActive(link.to) ? 'text-[#FF4D30]' : ''}`} />
+                  <link.icon className={`text-xl ${location.pathname === link.to ? 'text-[#FF4D30]' : ''}`} />
                   <span>{link.name}</span>
                 </button>
               ))}
+            </div>
+
+            {/* Language Selector */}
+            <div className="flex space-x-4">
+              <button onClick={() => changeLanguage('fr')} className="text-gray-700 hover:text-[#FF4D30]">FR</button>
+              <button onClick={() => changeLanguage('en')} className="text-gray-700 hover:text-[#FF4D30]">EN</button>
+              <button onClick={() => changeLanguage('de')} className="text-gray-700 hover:text-[#FF4D30]">DE</button>
             </div>
 
             {/* Mobile Navigation Button */}
@@ -105,12 +111,12 @@ const Navbar = () => {
                   key={link.name}
                   onClick={() => handleNavClick(link.to)}
                   className={`flex items-center space-x-2 w-full py-3 px-4 rounded-lg transition-all duration-300 ${
-                    isActive(link.to)
+                    location.pathname === link.to
                       ? 'text-[#283285] font-bold bg-blue-50' 
                       : 'text-[#596198] hover:text-[#232b6c] hover:bg-gray-50'
                   }`}
                 >
-                  <link.icon className={`text-xl ${isActive(link.to) ? 'text-[#FF4D30]' : ''}`} />
+                  <link.icon className={`text-xl ${location.pathname === link.to ? 'text-[#FF4D30]' : ''}`} />
                   <span>{link.name}</span>
                 </button>
               ))}
